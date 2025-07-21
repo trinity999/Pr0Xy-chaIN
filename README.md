@@ -53,7 +53,7 @@ proxy-scan curl https://httpbin.org/ip
 | `proxy-status` | Enhanced daemon status with health checks | `proxy-status` |
 | `proxy-stop` | Stop daemon | `proxy-stop` |
 | `proxy-scan` | Run tools through proxies | `proxy-scan curl httpbin.org/ip` |
-| `test-enhanced` | Run comprehensive test suite | `test-enhanced` |
+| `python tests/comprehensive_test_suite.py` | Run comprehensive test suite | `python tests/comprehensive_test_suite.py` |
 | `proxy-status-enhanced` | Show detailed status with monitoring | `proxy-status-enhanced` |
 
 ## 🎮 Tool Integration
@@ -135,9 +135,11 @@ powershell -ExecutionPolicy Bypass -File install_commands.ps1 -User
 
 ## 📖 Documentation
 
-- **[Complete Documentation](DOCUMENTATION.md)** - Detailed guide with all features
-- **[Quick Reference](QUICK_REFERENCE.md)** - Command cheat sheet and examples
-- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to the project
+- **[Complete Documentation](docs/DOCUMENTATION.md)** - Detailed guide with all features
+- **[Quick Reference](docs/QUICK_REFERENCE.md)** - Command cheat sheet and examples
+- **[Contributing Guide](docs/CONTRIBUTING.md)** - How to contribute to the project
+- **[Directory Structure](DIRECTORY_STRUCTURE.md)** - Organized project layout
+- **[Performance Report](benchmarks/FINAL_PERFORMANCE_REPORT.md)** - Latest benchmarks
 
 ## ⚠️ Legal & Ethical Use
 
