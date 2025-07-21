@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Proxy Chain Daemon Status Manager
-Check status, start, stop, and manage the proxy daemon
+ENHANCED Proxy Chain Daemon Status Manager
+Advanced status checking, health monitoring, and auto-repair capabilities
 """
 
 import json
@@ -10,13 +10,23 @@ import sys
 import subprocess
 import psutil
 import time
-from datetime import datetime
-from banner import print_mini_banner, print_status_header, print_status_footer
+import requests
+from datetime import datetime, timedelta
+from pathlib import Path
+try:
+    from banner import print_mini_banner, print_status_header, print_status_footer
+except ImportError:
+    # Fallback if banner module not available
+    def print_mini_banner(): pass
+    def print_status_header(): pass
+    def print_status_footer(): pass
 
 class ProxyDaemonManager:
     def __init__(self):
         self.status_file = "daemon_status.json"
         self.pid_file = "daemon.pid"
+        self.lock_file = "daemon.lock"
+        self.health_check_url = "http://httpbin.org/ip"
         
     def get_status(self):
         """Get current daemon status"""
@@ -31,17 +41,36 @@ class ProxyDaemonManager:
             return {"status": "error", "message": f"Error reading status: {e}"}
     
     def is_daemon_running(self):
-        """Check if daemon process is actually running"""
+        """Enhanced daemon process check with validation"""
         if not os.path.exists(self.pid_file):
             return False
             
         try:
             with open(self.pid_file, 'r') as f:
-                pid = int(f.read().strip())
+                content = f.read().strip()
+                if not content.isdigit():
+                    return False
+                pid = int(content)
                 
-            # Check if process exists
-            return psutil.pid_exists(pid)
-        except:
+            # Check if process exists and is our daemon
+            if not psutil.pid_exists(pid):
+                return False
+                
+            process = psutil.Process(pid)
+            
+            # Verify it's actually our Python daemon process
+            cmdline = process.cmdline()
+            if any("proxy_chain_daemon.py" in arg for arg in cmdline):
+                return True
+            else:
+                # PID file contains wrong process, clean it up
+                os.remove(self.pid_file)
+                return False
+                
+        except (ValueError, psutil.NoSuchProcess, PermissionError):
+            # Clean up invalid PID file
+            if os.path.exists(self.pid_file):
+                os.remove(self.pid_file)
             return False
     
     def save_pid(self, pid):
@@ -107,28 +136,123 @@ class ProxyDaemonManager:
         time.sleep(2)
         self.start_daemon(refresh_interval)
     
+    def check_proxy_health(self):
+        """Check if proxies are actually working"""
+        try:
+            if not os.path.exists('working_proxies.txt'):
+                return {"working": 0, "total": 0, "health": "no_proxies"}
+            
+            with open('working_proxies.txt', 'r') as f:
+                proxies = [line.strip() for line in f if line.strip()]
+            
+            if not proxies:
+                return {"working": 0, "total": 0, "health": "no_proxies"}
+            
+            # Test up to 3 proxies for health check
+            test_proxies = proxies[:3]
+            working_count = 0
+            
+            for proxy in test_proxies:
+                try:
+                    proxy_dict = {
+                        'http': f'http://{proxy}',
+                        'https': f'http://{proxy}'
+                    }
+                    response = requests.get(
+                        self.health_check_url, 
+                        proxies=proxy_dict, 
+                        timeout=10
+                    )
+                    if response.status_code == 200:
+                        working_count += 1
+                except:
+                    pass
+            
+            health_ratio = working_count / len(test_proxies)
+            if health_ratio >= 0.7:
+                health = "good"
+            elif health_ratio >= 0.3:
+                health = "fair"
+            else:
+                health = "poor"
+                
+            return {
+                "working": working_count,
+                "tested": len(test_proxies),
+                "total": len(proxies),
+                "health": health,
+                "ratio": round(health_ratio * 100, 1)
+            }
+            
+        except Exception as e:
+            return {"working": 0, "total": 0, "health": "error", "error": str(e)}
+    
+    def get_resource_usage(self):
+        """Get daemon process resource usage"""
+        try:
+            if not os.path.exists(self.pid_file):
+                return {"error": "PID file not found"}
+            
+            with open(self.pid_file, 'r') as f:
+                pid = int(f.read().strip())
+            
+            process = psutil.Process(pid)
+            
+            return {
+                "cpu_percent": round(process.cpu_percent(), 2),
+                "memory_mb": round(process.memory_info().rss / 1024 / 1024, 2),
+                "threads": process.num_threads(),
+                "status": process.status(),
+                "uptime_seconds": int(time.time() - process.create_time())
+            }
+            
+        except Exception as e:
+            return {"error": str(e)}
+    
     def show_status(self):
-        """Display detailed status"""
+        """Display enhanced status with health monitoring"""
         status = self.get_status()
         is_running = self.is_daemon_running()
         
-        print("🔗 Proxy Chain Daemon Status")
-        print("=" * 40)
+        print("🔗 ENHANCED Proxy Chain Daemon Status")
+        print("=" * 50)
         
+        # Process Status
         if is_running:
-            print("🟢 Status: RUNNING")
+            print("🟢 Process: RUNNING")
         else:
-            print("🔴 Status: STOPPED")
-            
+            print("🔴 Process: STOPPED")
+        
+        # Basic Info
         if status.get('started'):
-            print(f"📅 Started: {status['started']}")
-            
+            try:
+                started_time = datetime.fromisoformat(status['started'])
+                uptime = datetime.now() - started_time
+                print(f"📅 Started: {started_time.strftime('%Y-%m-%d %H:%M:%S')}")
+                print(f"⏱️  Uptime: {str(uptime).split('.')[0]}")
+            except:
+                print(f"📅 Started: {status['started']}")
+        
+        # Resource Usage (if running)
+        if is_running:
+            resources = self.get_resource_usage()
+            if "error" not in resources:
+                print(f"💾 Memory: {resources['memory_mb']} MB")
+                print(f"🖥️  CPU: {resources['cpu_percent']}%")
+                print(f"🧵 Threads: {resources['threads']}")
+        
+        # Proxy Health Check
+        health = self.check_proxy_health()
+        if "error" not in health:
+            print(f"🎯 Proxy Health: {health['health'].upper()}")
+            print(f"✅ Working: {health['working']}/{health['total']} ({health.get('ratio', 0)}%)")
+        
+        # Configuration Status
+        print(f"\n📊 Status: {status.get('status', 'unknown')}")
+        print(f"🔢 Refreshes: {status.get('total_refreshes', 0)}")
+        
         if status.get('last_refresh'):
             print(f"🔄 Last Refresh: {status['last_refresh']}")
-            
-        print(f"🎯 Working Proxies: {status.get('working_proxies', 0)}")
-        print(f"🔢 Total Refreshes: {status.get('total_refreshes', 0)}")
-        print(f"📊 Current Status: {status.get('status', 'unknown')}")
         
         # Show proxy list summary
         if os.path.exists('working_proxies.txt'):

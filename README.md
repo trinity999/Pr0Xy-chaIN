@@ -13,10 +13,12 @@
 - ✅ **Real-time Validation** - Tests proxy connectivity and performance
 - 🔁 **Intelligent Rotation** - Smart proxy switching for scanning activities
 - 🛠️ **Tool Integration** - Native support for Nmap, Gobuster, FFUF, Nuclei, cURL
-- 📊 **Background Daemon** - Runs continuously maintaining proxy pools
+- 📊 **Enhanced Daemon Management** - Advanced status monitoring with health checks
+- 🧪 **Comprehensive Testing** - Automated test suite with detailed reporting
 - 🎯 **One-Command Setup** - Simple initialization with `init-proxy-chain-now`
-- 📝 **Comprehensive Logging** - Detailed activity logs and monitoring
+- 📝 **Advanced Monitoring** - Resource usage, uptime, and proxy health tracking
 - 🌐 **Multi-Source** - GitHub repos, APIs, and public proxy databases
+- 🔧 **Auto-Repair** - Automatic detection and fixing of common issues
 
 ## ⚡ Quick Start
 
@@ -48,9 +50,11 @@ proxy-scan curl https://httpbin.org/ip
 | Command | Description | Example |
 |---------|-------------|---------|
 | `init-proxy-chain-now` | Initialize and start daemon | `init-proxy-chain-now` |
-| `proxy-status` | Show daemon status | `proxy-status` |
+| `proxy-status` | Enhanced daemon status with health checks | `proxy-status` |
 | `proxy-stop` | Stop daemon | `proxy-stop` |
 | `proxy-scan` | Run tools through proxies | `proxy-scan curl httpbin.org/ip` |
+| `test-enhanced` | Run comprehensive test suite | `test-enhanced` |
+| `proxy-status-enhanced` | Show detailed status with monitoring | `proxy-status-enhanced` |
 
 ## 🎮 Tool Integration
 

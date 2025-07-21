@@ -1,0 +1,297 @@
+{
+  "test_start_time": "2025-07-22T04:57:22.645947",
+  "basic_connectivity": {
+    "direct_ip": "49.37.115.104",
+    "proxy_tests": [
+      {
+        "proxy": "60.187.245.96:8085",
+        "ip": "183.145.247.215",
+        "response_time": 1.27,
+        "working": true,
+        "ip_changed": true
+      },
+      {
+        "proxy": "8.213.222.247:15",
+        "ip": "Error: HTTPConnectionPool(host='8.213.222.247', port=15): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)))",
+        "response_time": 0.19,
+        "working": false,
+        "ip_changed": false
+      }
+    ]
+  },
+  "ip_rotation": {
+    "total_rotations": 10,
+    "successful_rotations": 0,
+    "unique_ips": 0,
+    "unique_ip_list": [],
+    "rotation_details": [
+      {
+        "rotation": 1,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 2,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 3,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 4,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 5,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 6,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 7,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 8,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 9,
+        "ip": null,
+        "success": false
+      },
+      {
+        "rotation": 10,
+        "ip": null,
+        "success": false
+      }
+    ]
+  },
+  "performance_metrics": {
+    "direct_connection": [
+      0.6512229442596436,
+      0.4889061450958252,
+      1.0474662780761719,
+      0.5077426433563232,
+      0.5234310626983643
+    ],
+    "proxy_connections": [
+      {
+        "proxy": "60.187.245.96:8085",
+        "times": [
+          1.1646637916564941,
+          1.2900547981262207,
+          1.77734375
+        ],
+        "average": 1.4106874465942383,
+        "min": 1.1646637916564941,
+        "max": 1.77734375
+      },
+      {
+        "proxy": "8.213.222.247:15",
+        "times": [
+          15.00607442855835,
+          15.011521816253662,
+          15.01420545578003
+        ],
+        "average": 15.010600566864014,
+        "min": 15.00607442855835,
+        "max": 15.01420545578003
+      }
+    ],
+    "comparison": {
+      "direct_average": 0.64,
+      "proxy_average": 8.21,
+      "slowdown_factor": 12.75
+    }
+  },
+  "tool_integration": {
+    "total_tools_tested": 2,
+    "successful_integrations": 0,
+    "test_details": [
+      {
+        "tool": "curl",
+        "command": "python proxy_scanner.py curl http://httpbin.org/ip",
+        "success": false,
+        "execution_time": 0.82,
+        "return_code": 1,
+        "stdout_sample": "",
+        "stderr_sample": "Traceback (most recent call last):\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-chaIN\\proxy_scanner.py\", line 254, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-ch"
+      },
+      {
+        "tool": "curl_custom",
+        "command": "python proxy_scanner.py curl http://httpbin.org/headers -o -H 'User-Agent: TestAgent'",
+        "success": false,
+        "execution_time": 0.74,
+        "return_code": 1,
+        "stdout_sample": "",
+        "stderr_sample": "Traceback (most recent call last):\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-chaIN\\proxy_scanner.py\", line 254, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-ch"
+      }
+    ]
+  },
+  "stress_tests": {
+    "concurrent_requests": 15,
+    "successful_requests": 8,
+    "failed_requests": 7,
+    "success_rate": 53.33,
+    "average_response_time": 1.26,
+    "request_details": [
+      {
+        "request_id": 3,
+        "proxy": "60.187.245.96:8085",
+        "success": true,
+        "ip": "125.107.207.225",
+        "response_time": 1.1777770519256592
+      },
+      {
+        "request_id": 1,
+        "proxy": "60.187.245.96:8085",
+        "success": true,
+        "ip": "125.107.207.225",
+        "response_time": 1.1869025230407715
+      },
+      {
+        "request_id": 5,
+        "proxy": "60.187.245.96:8085",
+        "success": true,
+        "ip": "125.107.207.225",
+        "response_time": 1.2233505249023438
+      },
+      {
+        "request_id": 7,
+        "proxy": "60.187.245.96:8085",
+        "success": true,
+        "ip": "115.224.170.250",
+        "response_time": 1.2282447814941406
+      },
+      {
+        "request_id": 9,
+        "proxy": "60.187.245.96:8085",
+        "success": true,
+        "ip": "183.145.247.215",
+        "response_time": 1.506218671798706
+      },
+      {
+        "request_id": 4,
+        "proxy": "8.213.222.247:15",
+        "success": false,
+        "error": "HTTPConnectionPool(host='8.213.222.247', port=15): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000002CC8C3C39B0>, 'Connection to 8.213.222.247 timed out. (connect timeout=20)')))"
+      },
+      {
+        "request_id": 2,
+        "proxy": "8.213.222.247:15",
+        "success": false,
+        "error": "HTTPConnectionPool(host='8.213.222.247', port=15): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000002CC8C3C3570>, 'Connection to 8.213.222.247 timed out. (connect timeout=20)')))"
+      },
+      {
+        "request_id": 6,
+        "proxy": "8.213.222.247:15",
+        "success": false,
+        "error": "HTTPConnectionPool(host='8.213.222.247', port=15): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000002CC8C3C3790>, 'Connection to 8.213.222.247 timed out. (connect timeout=20)')))"
+      },
+      {
+        "request_id": 8,
+        "proxy": "8.213.222.247:15",
+        "success": false,
+        "error": "HTTPConnectionPool(host='8.213.222.247', port=15): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000002CC8C3C3130>, 'Connection to 8.213.222.247 timed out. (connect timeout=20)')))"
+      },
+      {
+        "request_id": 11,
+        "proxy": "60.187.245.96:8085",
+        "success": true,
+        "ip": "125.107.207.225",
+        "response_time": 1.2953546047210693
+      },
+      {
+        "request_id": 13,
+        "proxy": "60.187.245.96:8085",
+        "success": true,
+        "ip": "115.224.170.250",
+        "response_time": 1.2393913269042969
+      },
+      {
+        "request_id": 15,
+        "proxy": "60.187.245.96:8085",
+        "success": true,
+        "ip": "115.224.170.250",
+        "response_time": 1.2484185695648193
+      },
+      {
+        "request_id": 10,
+        "proxy": "8.213.222.247:15",
+        "success": false,
+        "error": "HTTPConnectionPool(host='8.213.222.247', port=15): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000002CC8C3C3DF0>, 'Connection to 8.213.222.247 timed out. (connect timeout=20)')))"
+      },
+      {
+        "request_id": 12,
+        "proxy": "8.213.222.247:15",
+        "success": false,
+        "error": "HTTPConnectionPool(host='8.213.222.247', port=15): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000002CC8C3C3460>, 'Connection to 8.213.222.247 timed out. (connect timeout=20)')))"
+      },
+      {
+        "request_id": 14,
+        "proxy": "8.213.222.247:15",
+        "success": false,
+        "error": "HTTPConnectionPool(host='8.213.222.247', port=15): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000002CC8CCF0380>, 'Connection to 8.213.222.247 timed out. (connect timeout=20)')))"
+      }
+    ]
+  },
+  "error_handling": {
+    "total_error_tests": 3,
+    "gracefully_handled": 3,
+    "test_details": [
+      {
+        "test": "invalid_proxy",
+        "result": "Error: HTTPConnectionPool(host='999.999.999.999', port=9999): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', NameResolutionError(\"<urllib3.connection.HTTPConnection object at 0x000002CC8C3C38A0>: Failed to resolve '999.999.999.999' ([Errno 11001] getaddrinfo failed)\")))",
+        "handled_gracefully": true
+      },
+      {
+        "test": "timeout_handling",
+        "error": "HTTPConnectionPool(host='10.255.255.1', port=8080): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x000002CC8CCF09E0>, 'Connection to 10.255.255.1 timed out. (connect timeout=3)')))",
+        "handled_gracefully": true
+      },
+      {
+        "test": "empty_proxy_list",
+        "return_code": 1,
+        "handled_gracefully": true
+      }
+    ]
+  },
+  "daemon_tests": {
+    "total_daemon_tests": 3,
+    "successful_tests": 2,
+    "test_details": [
+      {
+        "test": "daemon_status_check",
+        "success": false,
+        "output": ""
+      },
+      {
+        "test": "config_file_daemon_status.json",
+        "exists": true,
+        "readable": true
+      },
+      {
+        "test": "config_file_daemon.pid",
+        "exists": true,
+        "readable": true
+      }
+    ]
+  },
+  "summary": {
+    "total_tests": 17,
+    "passed_tests": 4,
+    "overall_score": 23.5,
+    "test_end_time": "2025-07-22T04:59:31.390267"
+  }
+}
