@@ -23,11 +23,29 @@ logger = logging.getLogger(__name__)
 class ProxyChainManager:
     def __init__(self):
         self.working_proxies = []
+        self.dead_proxies = set()
+        self.proxy_scores = {}  # Track proxy reliability scores
         self.proxy_sources = {
+            # Existing sources
             'free-proxy-list': 'https://www.proxy-list.download/api/v1/get?type=http',
             'proxylist-geonode': 'https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc',
             'proxy-list-github': 'https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt',
-            'free-proxy-csv': 'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt'
+            'free-proxy-csv': 'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt',
+            
+            # NEW: Additional reliable sources from your research
+            'monosans-http': 'https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt',
+            'monosans-socks4': 'https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks4.txt',
+            'monosans-socks5': 'https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks5.txt',
+            'proxifly-http': 'https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/protocols/http/data.txt',
+            'proxifly-https': 'https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/protocols/https/data.txt',
+            'proxifly-socks4': 'https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/protocols/socks4/data.txt',
+            'proxifly-socks5': 'https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/protocols/socks5/data.txt',
+            'vakhov-fresh-http': 'https://raw.githubusercontent.com/vakhov/fresh-proxy-list/master/http.txt',
+            'vakhov-fresh-https': 'https://raw.githubusercontent.com/vakhov/fresh-proxy-list/master/https.txt',
+            'vakhov-fresh-socks4': 'https://raw.githubusercontent.com/vakhov/fresh-proxy-list/master/socks4.txt',
+            'vakhov-fresh-socks5': 'https://raw.githubusercontent.com/vakhov/fresh-proxy-list/master/socks5.txt',
+            'speedx-socks4': 'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt',
+            'speedx-socks5': 'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt'
         }
         
     def fetch_proxies_from_api(self, source_name, url):
@@ -44,13 +62,22 @@ class ProxyChainManager:
                         proxies.append(f"{proxy['ip']}:{proxy['port']}")
                 return proxies
                 
-            elif source_name in ['proxy-list-github', 'free-proxy-csv']:
-                # Text-based proxy lists
+            elif source_name.startswith(('proxy-list-github', 'free-proxy-csv', 'monosans-', 'proxifly-', 'vakhov-', 'speedx-')):
+                # Text-based proxy lists from GitHub sources
                 proxies = []
                 for line in response.text.strip().split('\n'):
                     line = line.strip()
-                    if ':' in line and not line.startswith('#'):
-                        proxies.append(line)
+                    # Skip comments, empty lines, and invalid formats
+                    if ':' in line and not line.startswith('#') and not line.startswith('//') and line:
+                        # Validate IP:PORT format
+                        parts = line.split(':')
+                        if len(parts) == 2:
+                            try:
+                                # Validate port is numeric
+                                int(parts[1])
+                                proxies.append(line)
+                            except ValueError:
+                                continue
                 return proxies
                 
             else:
@@ -114,7 +141,7 @@ class ProxyChainManager:
         logger.info(f"Total unique proxies collected: {len(all_proxies)}")
         return list(all_proxies)
     
-    def validate_proxies(self, proxy_list, max_workers=50):
+    def validate_proxies(self, proxy_list, max_workers=200):
         """Validate proxies concurrently"""
         logger.info(f"Testing {len(proxy_list)} proxies...")
         working_proxies = []
@@ -158,13 +185,50 @@ class ProxyChainManager:
             return None
         return random.choice(self.working_proxies)
     
+    def mark_proxy_dead(self, proxy):
+        """Mark a proxy as dead and remove from working list"""
+        if proxy in self.working_proxies:
+            self.working_proxies.remove(proxy)
+            self.dead_proxies.add(proxy)
+            logger.info(f"Marked proxy {proxy} as dead")
+    
+    def remove_dead_proxies(self):
+        """Remove dead proxies from working list"""
+        initial_count = len(self.working_proxies)
+        self.working_proxies = [p for p in self.working_proxies if p not in self.dead_proxies]
+        removed_count = initial_count - len(self.working_proxies)
+        if removed_count > 0:
+            logger.info(f"Removed {removed_count} dead proxies")
+        return removed_count
+    
+    def score_proxy_reliability(self, proxy, success_rate):
+        """Score proxy based on reliability"""
+        self.proxy_scores[proxy] = success_rate
+    
+    def get_best_proxies(self, count=10):
+        """Get the most reliable proxies"""
+        if not self.proxy_scores:
+            return self.working_proxies[:count]
+        
+        sorted_proxies = sorted(
+            self.proxy_scores.items(), 
+            key=lambda x: x[1], 
+            reverse=True
+        )
+        return [proxy for proxy, score in sorted_proxies[:count] if proxy in self.working_proxies]
+    
     def create_proxy_chain(self, chain_length=3):
-        """Create a proxy chain configuration"""
+        """Create a proxy chain configuration using best available proxies"""
         if len(self.working_proxies) < chain_length:
             logger.warning(f"Not enough proxies for chain length {chain_length}")
             chain_length = len(self.working_proxies)
         
-        chain = random.sample(self.working_proxies, chain_length)
+        # Use best proxies if we have reliability scores
+        candidates = self.get_best_proxies(min(chain_length * 2, len(self.working_proxies)))
+        if len(candidates) < chain_length:
+            candidates = self.working_proxies
+            
+        chain = random.sample(candidates, chain_length)
         logger.info(f"Created proxy chain: {' -> '.join(chain)}")
         return chain
 
@@ -178,9 +242,15 @@ def main():
     print("📡 Fetching proxies from multiple sources...")
     all_proxies = manager.fetch_all_proxies()
     
-    # Validate proxies
-    print("🧪 Testing proxy connectivity...")
-    working_proxies = manager.validate_proxies(all_proxies[:200])  # Test first 200 for speed
+    # Validate proxies - NOW TESTS ALL PROXIES FOR MAXIMUM RESOURCES!
+    print("🚀 MASSIVE TESTING: Scanning ALL proxies for maximum resources...")
+    print(f"📊 Testing ALL {len(all_proxies):,} proxies to give you the best possible results!")
+    print("⚡ This ensures you get EVERY working proxy available (not just a few)")
+    print("⏱️  Please wait 10-20 minutes for complete scanning...")
+    print()
+    
+    # Use ALL proxies instead of limiting to 200
+    working_proxies = manager.validate_proxies(all_proxies)  # Test ALL for maximum resources!
     
     if not working_proxies:
         print("❌ No working proxies found. Try running again later.")
