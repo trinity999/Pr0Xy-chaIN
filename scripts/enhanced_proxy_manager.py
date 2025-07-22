@@ -203,15 +203,73 @@ class EnhancedProxyManager:
             return True
         return datetime.now() - self.last_refresh > timedelta(seconds=self.refresh_interval)
 
+    def remove_dead_proxies_auto(self):
+        """Automatically remove dead proxies and update config"""
+        initial_count = len(self.working_proxies)
+        
+        # Test each proxy quickly
+        healthy_proxies = []
+        for proxy in self.working_proxies[:]:
+            try:
+                proxy_dict = {'http': f'http://{proxy}', 'https': f'http://{proxy}'}
+                response = requests.get('http://httpbin.org/ip', proxies=proxy_dict, timeout=5)
+                if response.status_code == 200:
+                    healthy_proxies.append(proxy)
+                else:
+                    logger.info(f"🗑️ Auto-removed dead proxy: {proxy}")
+            except:
+                logger.info(f"🗑️ Auto-removed dead proxy: {proxy}")
+        
+        # Update working proxies list
+        self.working_proxies = healthy_proxies
+        removed_count = initial_count - len(self.working_proxies)
+        
+        if removed_count > 0:
+            logger.info(f"🧹 Auto-cleanup: Removed {removed_count} dead proxies")
+            # Update the proxy config file
+            self.update_proxy_config()
+        
+        return removed_count
+    
+    def update_proxy_config(self):
+        """Update proxy_config.json with current working proxies"""
+        try:
+            config = {
+                "working_proxies": self.working_proxies,
+                "rotation_enabled": True,
+                "chain_length": 3,
+                "timeout": 10,
+                "user_agents": [
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+                ]
+            }
+            
+            with open('proxy_config.json', 'w') as f:
+                json.dump(config, f, indent=2)
+            
+            logger.info(f"📝 Updated config with {len(self.working_proxies)} working proxies")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error updating config: {e}")
+            return False
+
     def auto_maintain(self):
-        """Background thread for automatic maintenance"""
+        """Background thread for automatic maintenance with dead proxy removal"""
         while True:
             try:
+                # Auto-remove dead proxies first
+                removed = self.remove_dead_proxies_auto()
+                
+                # Refresh if we need more proxies or it's time for refresh
                 if self.should_refresh() or len(self.working_proxies) < 5:
                     logger.info("🔧 Auto-maintenance: Refreshing proxy list...")
                     self.refresh_proxy_list()
-                    
-                time.sleep(60)  # Check every minute
+                
+                # Shorter sleep cycle for more responsive dead proxy removal
+                time.sleep(30)  # Check every 30 seconds
                 
             except Exception as e:
                 logger.error(f"Auto-maintenance error: {e}")

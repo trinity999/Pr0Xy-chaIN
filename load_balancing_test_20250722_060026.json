@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-07-22T06:00:26.179685",
+  "total_proxies": 7,
+  "current_results": {
+    "success_rate": 33.33333333333333,
+    "failed_requests": 10,
+    "avg_response_time": 1.0917370796203614,
+    "unique_ips": 3,
+    "load_distribution_score": 100.0,
+    "proxy_usage": {
+      "152.228.154.20:80": 3,
+      "103.113.3.240:3128": 2,
+      "143.42.66.91:80": 2,
+      "202.61.204.51:80": 2,
+      "8.221.138.111:46691": 2,
+      "47.250.11.111:3129": 2,
+      "209.97.149.157:80": 2
+    }
+  },
+  "before_results": {
+    "success_rate": 50.0,
+    "failed_requests": 5,
+    "avg_response_time": 3.47,
+    "unique_ips": 4,
+    "load_distribution_score": 57.1
+  },
+  "improvements": {
+    "success_rate_improvement": -16.66666666666667,
+    "response_time_improvement": 2.3782629203796386,
+    "distribution_improvement": 42.9
+  }
+}
