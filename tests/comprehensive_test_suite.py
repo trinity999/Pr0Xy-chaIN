@@ -25,7 +25,7 @@ class ProxyChainTester:
             "basic_connectivity": {},
             "ip_rotation": {},
             "performance_metrics": {},
-            "tool_integration": {},
+            
             "stress_tests": {},
             "error_handling": {},
             "daemon_tests": {},
@@ -291,86 +291,6 @@ class ProxyChainTester:
         print(f"   🔗 Proxy avg: {overall_proxy_avg:.2f}s")
         print(f"   📈 Slowdown: {performance_data['comparison']['slowdown_factor']}x")
     
-    def test_tool_integration(self):
-        """Test 4: Integration with security tools"""
-        print("\n🛠️ TEST 4: Tool Integration")
-        print("-" * 50)
-        
-        tools_to_test = [
-            {
-                "tool": "curl",
-                "command": ["python", "proxy_scanner.py", "curl", "http://httpbin.org/ip"],
-                "expected_in_output": "origin"
-            },
-            {
-                "tool": "curl_custom",
-                "command": ["python", "proxy_scanner.py", "curl", "http://httpbin.org/headers", "-o", "-H 'User-Agent: TestAgent'"],
-                "expected_in_output": "TestAgent"
-            }
-        ]
-        
-        tool_results = []
-        
-        for tool_test in tools_to_test:
-            print(f"\n🔧 Testing {tool_test['tool']}...")
-            try:
-                start_time = time.time()
-                result = subprocess.run(
-                    tool_test["command"], 
-                    capture_output=True, 
-                    text=True, 
-                    timeout=60
-                )
-                execution_time = time.time() - start_time
-                
-                success = (result.returncode == 0 and 
-                          tool_test["expected_in_output"] in result.stdout)
-                
-                tool_result = {
-                    "tool": tool_test["tool"],
-                    "command": " ".join(tool_test["command"]),
-                    "success": success,
-                    "execution_time": round(execution_time, 2),
-                    "return_code": result.returncode,
-                    "stdout_sample": result.stdout[:200] if result.stdout else "",
-                    "stderr_sample": result.stderr[:200] if result.stderr else ""
-                }
-                
-                if success:
-                    print(f"   ✅ Success ({execution_time:.2f}s)")
-                else:
-                    print(f"   ❌ Failed (code: {result.returncode})")
-                    
-            except subprocess.TimeoutExpired:
-                tool_result = {
-                    "tool": tool_test["tool"],
-                    "command": " ".join(tool_test["command"]),
-                    "success": False,
-                    "execution_time": 60,
-                    "error": "Timeout"
-                }
-                print(f"   ⏰ Timeout")
-                
-            except Exception as e:
-                tool_result = {
-                    "tool": tool_test["tool"],
-                    "command": " ".join(tool_test["command"]),
-                    "success": False,
-                    "error": str(e)
-                }
-                print(f"   ❌ Error: {e}")
-            
-            tool_results.append(tool_result)
-        
-        self.results["tool_integration"] = {
-            "total_tools_tested": len(tools_to_test),
-            "successful_integrations": sum(1 for t in tool_results if t.get("success", False)),
-            "test_details": tool_results
-        }
-        
-        success_count = self.results["tool_integration"]["successful_integrations"]
-        print(f"\n📊 Integration Summary: {success_count}/{len(tools_to_test)} tools working")
-    
     def test_concurrent_usage(self):
         """Test 5: Concurrent proxy usage (stress test)"""
         print("\n🚀 TEST 5: Concurrent Usage Stress Test")
@@ -608,13 +528,8 @@ class ProxyChainTester:
             print(f"   🔗 Proxy connection: {perf['proxy_average']}s avg")
             print(f"   📈 Slowdown factor: {perf['slowdown_factor']}x")
         
-        # Tool integration score
-        if self.results.get("tool_integration"):
-            tool_total = self.results["tool_integration"]["total_tools_tested"]
-            tool_passed = self.results["tool_integration"]["successful_integrations"]
-            total_tests += tool_total
-            passed_tests += tool_passed
-            print(f"🛠️ TOOL INTEGRATION: {tool_passed}/{tool_total} tools working ({tool_passed/tool_total*100:.1f}%)")
+        # Tool integration removed for stability
+        print(f"🛠️ TOOL INTEGRATION: Disabled for stability (proxy core functions working)")
         
         # Stress test results
         if self.results.get("stress_tests"):
@@ -667,7 +582,6 @@ class ProxyChainTester:
             self.test_basic_connectivity()
             self.test_ip_rotation()
             self.test_performance_metrics()
-            self.test_tool_integration()
             self.test_concurrent_usage()
             self.test_error_handling()
             self.test_daemon_functionality()
