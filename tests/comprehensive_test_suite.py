@@ -61,28 +61,32 @@ class ProxyChainTester:
         if not output_text:
             return None
             
-        # Try different patterns
+        # Try different patterns in order of preference
         patterns = [
+            r'\{"origin":\s*"([^"]+)"\}',  # Clean JSON format
             self.test_patterns["current_ip_pattern"],
             self.test_patterns["origin_pattern"],
             r'"origin"\s*:\s*"([^"]+)"',  # JSON format
+            r'IP Result:\s*\{"origin":\s*"([^"]+)"\}',  # Curl result format
             r'Current IP:\s*(\S+)',       # Status output
-            r'origin":\s*"([^"]+)"'       # Partial JSON
+            r'origin":\s*"([^"]+)"',       # Partial JSON
+            r'IP:\s*([0-9.]+)',            # Direct IP format
         ]
         
         for pattern in patterns:
             match = re.search(pattern, output_text)
             if match:
-                potential_ip = match.group(1)
+                potential_ip = match.group(1).strip()
                 if self.validate_ip_address(potential_ip):
                     return potential_ip
         
         # Fallback: look for any valid IP in the text
-        ip_match = re.search(self.test_patterns["ip_pattern"], output_text)
-        if ip_match:
-            potential_ip = ip_match.group()
+        ip_matches = re.findall(self.test_patterns["ip_pattern"], output_text)
+        for potential_ip in ip_matches:
             if self.validate_ip_address(potential_ip):
-                return potential_ip
+                # Skip common non-routable IPs that might be noise
+                if not potential_ip.startswith(('127.', '169.254.', '0.', '255.')):
+                    return potential_ip
                 
         return None
         

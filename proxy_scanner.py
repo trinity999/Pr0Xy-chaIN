@@ -23,7 +23,7 @@ class ProxyScanner:
     def load_config(self):
         """Load proxy configuration"""
         if not os.path.exists(self.config_file):
-            print(f"❌ Config file {self.config_file} not found. Run proxy_chain_setup.py first.")
+            print(f"[ERROR] Config file {self.config_file} not found. Run proxy_chain_setup.py first.")
             sys.exit(1)
             
         with open(self.config_file, 'r') as f:
@@ -32,15 +32,45 @@ class ProxyScanner:
     def get_random_proxy(self):
         """Get a random working proxy"""
         if not self.config.get('working_proxies'):
-            print("❌ No working proxies available")
+            print("[ERROR] No working proxies available")
             return None
         return random.choice(self.config['working_proxies'])
     
-    def rotate_proxy(self):
-        """Rotate to a new proxy"""
+    def validate_proxy(self, proxy):
+        """Validate a single proxy quickly"""
+        try:
+            proxy_dict = {
+                'http': f'http://{proxy}',
+                'https': f'http://{proxy}'
+            }
+            response = requests.get(
+                'http://httpbin.org/ip',
+                proxies=proxy_dict,
+                timeout=5  # Quick validation
+            )
+            return response.status_code == 200
+        except:
+            return False
+    
+    def rotate_proxy(self, max_retries=3):
+        """Rotate to a new proxy with validation"""
+        for attempt in range(max_retries):
+            candidate_proxy = self.get_random_proxy()
+            if not candidate_proxy:
+                return None
+                
+            # Quick validation before using
+            if self.validate_proxy(candidate_proxy):
+                self.current_proxy = candidate_proxy
+                print(f"[+] Using proxy: {self.current_proxy}")
+                return self.current_proxy
+            else:
+                print(f"[!] Proxy {candidate_proxy} failed validation, trying another...")
+                
+        # If all attempts failed, try without validation as fallback
         self.current_proxy = self.get_random_proxy()
         if self.current_proxy:
-            print(f"🔄 Using proxy: {self.current_proxy}")
+            print(f"[~] Using proxy (unvalidated): {self.current_proxy}")
         return self.current_proxy
     
     def get_proxy_env(self):
@@ -127,14 +157,25 @@ class ProxyScanner:
         if use_proxy:
             proxy = self.rotate_proxy()
             if proxy:
-                cmd = f"curl --proxy http://{proxy} {options} {url}"
+                # Add silent flag and ensure we get clean JSON output
+                if 'httpbin.org/ip' in url and '-s' not in options:
+                    cmd = f"curl --proxy http://{proxy} -s {options} {url}"
+                else:
+                    cmd = f"curl --proxy http://{proxy} {options} {url}"
             else:
                 cmd = f"curl {options} {url}"
         else:
             cmd = f"curl {options} {url}"
             
         print(f"🎯 Running: {cmd}")
-        return self.run_command(cmd)
+        result = self.run_command(cmd)
+        
+        # If this is an IP check, also output the result cleanly
+        if result and result.returncode == 0 and 'httpbin.org/ip' in url:
+            if result.stdout.strip():
+                print(f"🔍 IP Result: {result.stdout.strip()}")
+        
+        return result
     
     def run_command(self, cmd):
         """Execute command with proper environment"""
@@ -170,9 +211,9 @@ class ProxyScanner:
         return None
     
     def test_proxy_connectivity(self):
-        """Test current proxy connectivity"""
-        if not self.current_proxy:
-            self.rotate_proxy()
+        """Test current proxy connectivity and return IP"""
+        # Always rotate to get a fresh proxy
+        self.rotate_proxy()
             
         if not self.current_proxy:
             print("❌ No proxy available for testing")
@@ -192,13 +233,25 @@ class ProxyScanner:
             
             if response.status_code == 200:
                 data = response.json()
-                print(f"✅ Proxy {self.current_proxy} working. Current IP: {data.get('origin')}")
+                current_ip = data.get('origin')
+                print(f"✅ Proxy {self.current_proxy} working. Current IP: {current_ip}")
+                # Output JSON for easy parsing
+                print(f'{{"origin": "{current_ip}"}}')
                 return True
             else:
                 print(f"❌ Proxy {self.current_proxy} returned status {response.status_code}")
                 
         except Exception as e:
             print(f"❌ Proxy {self.current_proxy} failed: {e}")
+            # Try fallback without proxy to check connectivity
+            try:
+                fallback_response = requests.get('http://httpbin.org/ip', timeout=10)
+                if fallback_response.status_code == 200:
+                    fallback_data = fallback_response.json()
+                    print(f"⚠️ Fallback direct connection. IP: {fallback_data.get('origin')}")
+                    print(f'{{"origin": "{fallback_data.get("origin")}"}}')
+            except:
+                pass
             
         return False
 

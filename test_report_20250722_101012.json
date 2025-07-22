@@ -1,0 +1,304 @@
+{
+  "test_start_time": "2025-07-22T10:04:40.364965",
+  "basic_connectivity": {
+    "direct_ip": "49.37.115.104",
+    "proxy_tests": [
+      {
+        "proxy": "38.147.98.190:8080",
+        "ip": "38.147.98.190",
+        "response_time": 10.95,
+        "working": true,
+        "ip_changed": true
+      },
+      {
+        "proxy": "191.97.20.75:999",
+        "ip": "Error: HTTPConnectionPool(host='191.97.20.75', port=999): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x00000216F4C14910>, 'Connection to 191.97.20.75 timed out. (connect timeout=15)')))",
+        "response_time": 15.01,
+        "working": false,
+        "ip_changed": false
+      }
+    ]
+  },
+  "ip_rotation": {
+    "total_rotations": 10,
+    "successful_rotations": 10,
+    "unique_ips": 2,
+    "unique_ip_list": [
+      "38.147.98.190",
+      "191.97.20.75"
+    ],
+    "rotation_details": [
+      {
+        "rotation": 1,
+        "ip": "191.97.20.75",
+        "success": true
+      },
+      {
+        "rotation": 2,
+        "ip": "191.97.20.75",
+        "success": true
+      },
+      {
+        "rotation": 3,
+        "ip": "38.147.98.190",
+        "success": true
+      },
+      {
+        "rotation": 4,
+        "ip": "38.147.98.190",
+        "success": true
+      },
+      {
+        "rotation": 5,
+        "ip": "191.97.20.75",
+        "success": true
+      },
+      {
+        "rotation": 6,
+        "ip": "191.97.20.75",
+        "success": true
+      },
+      {
+        "rotation": 7,
+        "ip": "38.147.98.190",
+        "success": true
+      },
+      {
+        "rotation": 8,
+        "ip": "191.97.20.75",
+        "success": true
+      },
+      {
+        "rotation": 9,
+        "ip": "38.147.98.190",
+        "success": true
+      },
+      {
+        "rotation": 10,
+        "ip": "38.147.98.190",
+        "success": true
+      }
+    ]
+  },
+  "performance_metrics": {
+    "direct_connection": [
+      0.4782836437225342,
+      0.5141534805297852,
+      0.4915485382080078,
+      0.5113470554351807,
+      0.4933910369873047
+    ],
+    "proxy_connections": [
+      {
+        "proxy": "38.147.98.190:8080",
+        "times": [
+          2.3997044563293457,
+          5.131407976150513,
+          2.047823429107666
+        ],
+        "average": 3.192978620529175,
+        "min": 2.047823429107666,
+        "max": 5.131407976150513
+      },
+      {
+        "proxy": "191.97.20.75:999",
+        "times": [
+          6.010879278182983,
+          3.8309364318847656,
+          6.201696157455444
+        ],
+        "average": 5.3478372891743975,
+        "min": 3.8309364318847656,
+        "max": 6.201696157455444
+      }
+    ],
+    "comparison": {
+      "direct_average": 0.5,
+      "proxy_average": 4.27,
+      "slowdown_factor": 8.58
+    }
+  },
+  "tool_integration": {
+    "total_tools_tested": 2,
+    "successful_integrations": 0,
+    "test_details": [
+      {
+        "tool": "curl",
+        "command": "python proxy_scanner.py curl http://httpbin.org/ip",
+        "success": false,
+        "execution_time": 5.51,
+        "return_code": 1,
+        "stdout_sample": "[+] Using proxy: 191.97.20.75:999\n",
+        "stderr_sample": "Traceback (most recent call last):\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-chaIN\\proxy_scanner.py\", line 307, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-ch"
+      },
+      {
+        "tool": "curl_custom",
+        "command": "python proxy_scanner.py curl http://httpbin.org/headers -o -H 'User-Agent: TestAgent'",
+        "success": false,
+        "execution_time": 15.9,
+        "return_code": 1,
+        "stdout_sample": "[!] Proxy 191.97.20.75:999 failed validation, trying another...\n[!] Proxy 191.97.20.75:999 failed validation, trying another...\n[!] Proxy 191.97.20.75:999 failed validation, trying another...\n[~] Usin",
+        "stderr_sample": "Traceback (most recent call last):\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-chaIN\\proxy_scanner.py\", line 307, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-ch"
+      }
+    ]
+  },
+  "stress_tests": {
+    "concurrent_requests": 15,
+    "successful_requests": 12,
+    "failed_requests": 3,
+    "success_rate": 80.0,
+    "average_response_time": 4.94,
+    "request_details": [
+      {
+        "request_id": 1,
+        "proxy": "38.147.98.190:8080",
+        "success": true,
+        "ip": "38.147.98.190",
+        "response_time": 4.536359548568726
+      },
+      {
+        "request_id": 3,
+        "proxy": "38.147.98.190:8080",
+        "success": true,
+        "ip": "38.147.98.190",
+        "response_time": 4.58927321434021
+      },
+      {
+        "request_id": 5,
+        "proxy": "38.147.98.190:8080",
+        "success": true,
+        "ip": "38.147.98.190",
+        "response_time": 5.155125141143799
+      },
+      {
+        "request_id": 4,
+        "proxy": "191.97.20.75:999",
+        "success": true,
+        "ip": "49.37.115.104, 191.97.20.71",
+        "response_time": 5.31870436668396
+      },
+      {
+        "request_id": 2,
+        "proxy": "191.97.20.75:999",
+        "success": true,
+        "ip": "49.37.115.104, 191.97.20.73",
+        "response_time": 5.40984582901001
+      },
+      {
+        "request_id": 7,
+        "proxy": "38.147.98.190:8080",
+        "success": true,
+        "ip": "38.147.98.190",
+        "response_time": 1.6025383472442627
+      },
+      {
+        "request_id": 9,
+        "proxy": "38.147.98.190:8080",
+        "success": true,
+        "ip": "38.147.98.190",
+        "response_time": 5.632983922958374
+      },
+      {
+        "request_id": 11,
+        "proxy": "38.147.98.190:8080",
+        "success": true,
+        "ip": "38.147.98.190",
+        "response_time": 5.672281265258789
+      },
+      {
+        "request_id": 13,
+        "proxy": "38.147.98.190:8080",
+        "success": true,
+        "ip": "38.147.98.190",
+        "response_time": 2.3700153827667236
+      },
+      {
+        "request_id": 14,
+        "proxy": "191.97.20.75:999",
+        "success": true,
+        "ip": "49.37.115.104, 191.97.20.79",
+        "response_time": 4.247189521789551
+      },
+      {
+        "request_id": 12,
+        "proxy": "191.97.20.75:999",
+        "success": true,
+        "ip": "49.37.115.104, 191.97.20.71",
+        "response_time": 10.989263772964478
+      },
+      {
+        "request_id": 15,
+        "proxy": "38.147.98.190:8080",
+        "success": true,
+        "ip": "38.147.98.190",
+        "response_time": 3.7453830242156982
+      },
+      {
+        "request_id": 6,
+        "proxy": "191.97.20.75:999",
+        "success": false,
+        "error": "HTTPConnectionPool(host='191.97.20.75', port=999): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x00000216F4B87BD0>, 'Connection to 191.97.20.75 timed out. (connect timeout=20)')))"
+      },
+      {
+        "request_id": 8,
+        "proxy": "191.97.20.75:999",
+        "success": false,
+        "error": "HTTPConnectionPool(host='191.97.20.75', port=999): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x00000216F4B87F00>, 'Connection to 191.97.20.75 timed out. (connect timeout=20)')))"
+      },
+      {
+        "request_id": 10,
+        "proxy": "191.97.20.75:999",
+        "success": false,
+        "error": "HTTPConnectionPool(host='191.97.20.75', port=999): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x00000216F4B87DF0>, 'Connection to 191.97.20.75 timed out. (connect timeout=20)')))"
+      }
+    ]
+  },
+  "error_handling": {
+    "total_error_tests": 3,
+    "gracefully_handled": 3,
+    "test_details": [
+      {
+        "test": "invalid_proxy",
+        "result": "Error: HTTPConnectionPool(host='999.999.999.999', port=9999): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', NameResolutionError(\"<urllib3.connection.HTTPConnection object at 0x00000216F4B87240>: Failed to resolve '999.999.999.999' ([Errno 11001] getaddrinfo failed)\")))",
+        "handled_gracefully": true
+      },
+      {
+        "test": "timeout_handling",
+        "error": "HTTPConnectionPool(host='10.255.255.1', port=8080): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x00000216F4B87680>, 'Connection to 10.255.255.1 timed out. (connect timeout=3)')))",
+        "handled_gracefully": true
+      },
+      {
+        "test": "empty_proxy_list",
+        "error": "Command '['python', 'proxy_scanner.py', 'test', 'httpbin.org']' timed out after 15 seconds",
+        "handled_gracefully": true
+      }
+    ]
+  },
+  "daemon_tests": {
+    "total_daemon_tests": 3,
+    "successful_tests": 2,
+    "test_details": [
+      {
+        "test": "daemon_status_check",
+        "success": false,
+        "output": ""
+      },
+      {
+        "test": "config_file_daemon_status.json",
+        "exists": true,
+        "readable": true
+      },
+      {
+        "test": "config_file_daemon.pid",
+        "exists": true,
+        "readable": true
+      }
+    ]
+  },
+  "summary": {
+    "total_tests": 17,
+    "passed_tests": 14,
+    "overall_score": 82.4,
+    "test_end_time": "2025-07-22T10:10:12.626487"
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "test_start_time": "2025-07-22T06:14:32.159156",
+  "basic_connectivity": {
+    "direct_ip": "49.37.115.104",
+    "proxy_tests": [
+      {
+        "proxy": "125.125.131.13:8085",
+        "ip": "Error: HTTPConnectionPool(host='125.125.131.13', port=8085): Read timed out. (read timeout=15)",
+        "response_time": 15.4,
+        "working": false,
+        "ip_changed": false
+      },
+      {
+        "proxy": "218.75.224.4:3309",
+        "ip": "218.75.224.4",
+        "response_time": 1.73,
+        "working": true,
+        "ip_changed": true
+      },
+      {
+        "proxy": "222.59.173.105:45012",
+        "ip": "222.59.173.105",
+        "response_time": 1.92,
+        "working": true,
+        "ip_changed": true
+      }
+    ]
+  },
+  "ip_rotation": {
+    "total_rotations": 10,
+    "successful_rotations": 10,
+    "unique_ips": 3,
+    "unique_ip_list": [
+      "222.59.173.105",
+      "218.75.224.4",
+      "125.125.131.13"
+    ],
+    "rotation_details": [
+      {
+        "rotation": 1,
+        "ip": "125.125.131.13",
+        "success": true
+      },
+      {
+        "rotation": 2,
+        "ip": "125.125.131.13",
+        "success": true
+      },
+      {
+        "rotation": 3,
+        "ip": "125.125.131.13",
+        "success": true
+      },
+      {
+        "rotation": 4,
+        "ip": "125.125.131.13",
+        "success": true
+      },
+      {
+        "rotation": 5,
+        "ip": "218.75.224.4",
+        "success": true
+      },
+      {
+        "rotation": 6,
+        "ip": "125.125.131.13",
+        "success": true
+      },
+      {
+        "rotation": 7,
+        "ip": "218.75.224.4",
+        "success": true
+      },
+      {
+        "rotation": 8,
+        "ip": "222.59.173.105",
+        "success": true
+      },
+      {
+        "rotation": 9,
+        "ip": "222.59.173.105",
+        "success": true
+      },
+      {
+        "rotation": 10,
+        "ip": "222.59.173.105",
+        "success": true
+      }
+    ]
+  },
+  "performance_metrics": {
+    "direct_connection": [
+      0.506688117980957,
+      1.1164209842681885,
+      0.483400821685791,
+      0.4999573230743408,
+      0.9406869411468506
+    ],
+    "proxy_connections": [
+      {
+        "proxy": "125.125.131.13:8085",
+        "times": [
+          11.758720874786377,
+          8.229225397109985,
+          11.246622323989868
+        ],
+        "average": 10.41152286529541,
+        "min": 8.229225397109985,
+        "max": 11.758720874786377
+      },
+      {
+        "proxy": "218.75.224.4:3309",
+        "times": [
+          1.7634003162384033,
+          1.356496810913086,
+          1.3083395957946777
+        ],
+        "average": 1.4760789076487224,
+        "min": 1.3083395957946777,
+        "max": 1.7634003162384033
+      },
+      {
+        "proxy": "222.59.173.105:45012",
+        "times": [
+          1.4080274105072021,
+          4.813802480697632,
+          1.4622886180877686
+        ],
+        "average": 2.5613728364308677,
+        "min": 1.4080274105072021,
+        "max": 4.813802480697632
+      }
+    ],
+    "comparison": {
+      "direct_average": 0.71,
+      "proxy_average": 4.82,
+      "slowdown_factor": 6.79
+    }
+  },
+  "tool_integration": {
+    "total_tools_tested": 2,
+    "successful_integrations": 0,
+    "test_details": [
+      {
+        "tool": "curl",
+        "command": "python proxy_scanner.py curl http://httpbin.org/ip",
+        "success": false,
+        "execution_time": 1.86,
+        "return_code": 1,
+        "stdout_sample": "[+] Using proxy: 222.59.173.105:45012\n",
+        "stderr_sample": "Traceback (most recent call last):\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-chaIN\\proxy_scanner.py\", line 307, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-ch"
+      },
+      {
+        "tool": "curl_custom",
+        "command": "python proxy_scanner.py curl http://httpbin.org/headers -o -H 'User-Agent: TestAgent'",
+        "success": false,
+        "execution_time": 2.35,
+        "return_code": 1,
+        "stdout_sample": "[+] Using proxy: 218.75.224.4:3309\n",
+        "stderr_sample": "Traceback (most recent call last):\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-chaIN\\proxy_scanner.py\", line 307, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\abhij\\harshal-bugbounty\\Pr0Xy-ch"
+      }
+    ]
+  },
+  "stress_tests": {
+    "concurrent_requests": 15,
+    "successful_requests": 15,
+    "failed_requests": 0,
+    "success_rate": 100.0,
+    "average_response_time": 2.04,
+    "request_details": [
+      {
+        "request_id": 3,
+        "proxy": "222.59.173.105:45012",
+        "success": true,
+        "ip": "222.59.173.105",
+        "response_time": 0.9265885353088379
+      },
+      {
+        "request_id": 1,
+        "proxy": "125.125.131.13:8085",
+        "success": true,
+        "ip": "122.230.58.186",
+        "response_time": 1.3321454524993896
+      },
+      {
+        "request_id": 4,
+        "proxy": "125.125.131.13:8085",
+        "success": true,
+        "ip": "122.230.58.186",
+        "response_time": 1.3884422779083252
+      },
+      {
+        "request_id": 2,
+        "proxy": "218.75.224.4:3309",
+        "success": true,
+        "ip": "218.75.224.4",
+        "response_time": 1.8167622089385986
+      },
+      {
+        "request_id": 5,
+        "proxy": "218.75.224.4:3309",
+        "success": true,
+        "ip": "218.75.224.4",
+        "response_time": 2.269627332687378
+      },
+      {
+        "request_id": 6,
+        "proxy": "222.59.173.105:45012",
+        "success": true,
+        "ip": "222.59.173.105",
+        "response_time": 1.3740713596343994
+      },
+      {
+        "request_id": 7,
+        "proxy": "125.125.131.13:8085",
+        "success": true,
+        "ip": "183.143.172.238",
+        "response_time": 1.1822841167449951
+      },
+      {
+        "request_id": 8,
+        "proxy": "218.75.224.4:3309",
+        "success": true,
+        "ip": "218.75.224.4",
+        "response_time": 1.47597074508667
+      },
+      {
+        "request_id": 10,
+        "proxy": "125.125.131.13:8085",
+        "success": true,
+        "ip": "183.143.172.238",
+        "response_time": 1.1917014122009277
+      },
+      {
+        "request_id": 11,
+        "proxy": "218.75.224.4:3309",
+        "success": true,
+        "ip": "218.75.224.4",
+        "response_time": 2.289069890975952
+      },
+      {
+        "request_id": 14,
+        "proxy": "218.75.224.4:3309",
+        "success": true,
+        "ip": "218.75.224.4",
+        "response_time": 1.315610408782959
+      },
+      {
+        "request_id": 12,
+        "proxy": "222.59.173.105:45012",
+        "success": true,
+        "ip": "222.59.173.105",
+        "response_time": 2.32399582862854
+      },
+      {
+        "request_id": 9,
+        "proxy": "222.59.173.105:45012",
+        "success": true,
+        "ip": "222.59.173.105",
+        "response_time": 4.725049257278442
+      },
+      {
+        "request_id": 13,
+        "proxy": "125.125.131.13:8085",
+        "success": true,
+        "ip": "183.143.172.238",
+        "response_time": 3.89566707611084
+      },
+      {
+        "request_id": 15,
+        "proxy": "222.59.173.105:45012",
+        "success": true,
+        "ip": "222.59.173.105",
+        "response_time": 3.154939889907837
+      }
+    ]
+  },
+  "error_handling": {
+    "total_error_tests": 3,
+    "gracefully_handled": 3,
+    "test_details": [
+      {
+        "test": "invalid_proxy",
+        "result": "Error: HTTPConnectionPool(host='999.999.999.999', port=9999): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', NameResolutionError(\"<urllib3.connection.HTTPConnection object at 0x00000296ACE97570>: Failed to resolve '999.999.999.999' ([Errno 11001] getaddrinfo failed)\")))",
+        "handled_gracefully": true
+      },
+      {
+        "test": "timeout_handling",
+        "error": "HTTPConnectionPool(host='10.255.255.1', port=8080): Max retries exceeded with url: http://httpbin.org/ip (Caused by ProxyError('Unable to connect to proxy', ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x00000296ACE97350>, 'Connection to 10.255.255.1 timed out. (connect timeout=3)')))",
+        "handled_gracefully": true
+      },
+      {
+        "test": "empty_proxy_list",
+        "return_code": 1,
+        "handled_gracefully": true
+      }
+    ]
+  },
+  "daemon_tests": {
+    "total_daemon_tests": 3,
+    "successful_tests": 2,
+    "test_details": [
+      {
+        "test": "daemon_status_check",
+        "success": false,
+        "output": ""
+      },
+      {
+        "test": "config_file_daemon_status.json",
+        "exists": true,
+        "readable": true
+      },
+      {
+        "test": "config_file_daemon.pid",
+        "exists": true,
+        "readable": true
+      }
+    ]
+  },
+  "summary": {
+    "total_tests": 18,
+    "passed_tests": 15,
+    "overall_score": 83.3,
+    "test_end_time": "2025-07-22T06:17:29.033010"
+  }
+}
