@@ -1,0 +1,83 @@
+{
+  "timestamp": "2025-07-22T05:51:58.484456",
+  "upgrade_version": "Massive Proxy Integration v2.0",
+  "total_available_proxies": 47022,
+  "tests": {
+    "proxy_pool_size": {
+      "old_count": 4,
+      "new_count": 7,
+      "improvement_percent": 175.0,
+      "additional_proxies": 3,
+      "status": "IMPROVED"
+    },
+    "connectivity": {
+      "total_tested": 7,
+      "working_count": 6,
+      "failed_count": 1,
+      "success_rate": 85.71428571428571,
+      "avg_response_time": 3.2785146236419678,
+      "working_proxies": [
+        "152.228.154.20:80",
+        "143.42.66.91:80",
+        "202.61.204.51:80",
+        "8.221.138.111:46691",
+        "47.250.11.111:3129",
+        "209.97.149.157:80"
+      ],
+      "failed_proxies": [
+        "103.113.3.240:3128"
+      ]
+    },
+    "geographic_diversity": {
+      "ip_ranges": 7,
+      "estimated_regions": 4,
+      "diversity_score": 100.0,
+      "regions": [
+        "EU",
+        "US",
+        "APAC",
+        "OTHER"
+      ]
+    },
+    "load_balancing": {
+      "concurrent_requests": 10,
+      "successful_requests": 5,
+      "failed_requests": 5,
+      "success_rate": 50.0,
+      "unique_ips": 4,
+      "load_balance_efficiency": 57.14285714285714
+    },
+    "source_diversity": {
+      "sources_count": 8,
+      "sources_list": [
+        "monosans/proxy-list (hourly updates)",
+        "vakhov/fresh-proxy-list (5-20 min updates)",
+        "TheSpeedX/PROXY-List (daily updates)",
+        "clarketm/proxy-list (daily updates)",
+        "geonode API (real-time)",
+        "proxy-list.download API",
+        "sunny9577/proxy-scraper",
+        "jetkai/proxy-list"
+      ],
+      "diversity_score": 80.0,
+      "update_frequencies": [
+        "hourly",
+        "5-20min",
+        "daily",
+        "real-time"
+      ]
+    }
+  },
+  "metrics": {},
+  "comparisons": {
+    "old_reliability": 31.6,
+    "new_reliability": 78.92857142857143,
+    "improvement": 47.32857142857143,
+    "grade": "\u2b50\u2b50\u2b50\u2b50 GOOD (Production-Ready)",
+    "proxy_pool_multiplier": 1.75
+  },
+  "recommendations": [
+    "\u26a1 Implement automatic dead proxy removal for better load balancing"
+  ],
+  "final_score": 78.92857142857143
+}
